@@ -206,7 +206,6 @@ app.post('/api/login', async (req, res) => {
 });
 
 
-const axios = require("axios");
 
 app.get("/api/news", async (req, res) => {
   try {
