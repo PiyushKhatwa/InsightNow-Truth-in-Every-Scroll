@@ -19,20 +19,25 @@ const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 const ALLOW_START_WITHOUT_DB = process.env.ALLOW_START_WITHOUT_DB === 'true';
 
 // Middleware
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin) {
+//       return callback(null, true);
+//     }
+//     const allowedOrigins = CLIENT_ORIGIN.split(',').map(o => o.trim()).filter(Boolean);
+//     if (allowedOrigins.includes(origin)) {
+//       return callback(null, true);
+//     }
+//     return callback(new Error(`CORS blocked for origin: ${origin}`));
+//   },
+//   credentials: true
+// }));
+// app.use(bodyParser.json());
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) {
-      return callback(null, true);
-    }
-    const allowedOrigins = CLIENT_ORIGIN.split(',').map(o => o.trim()).filter(Boolean);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
-  },
+  origin: CLIENT_ORIGIN.split(',').map(o => o.trim()),
   credentials: true
 }));
-app.use(bodyParser.json());
+
 
 // User Schema and Model
 const userSchema = new mongoose.Schema({
@@ -220,8 +225,8 @@ const sendSubscriptionEmail = async (name, email) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'mangesh.07gsb@gmail.com',
-      pass: 'exlq fadv enfl kszf'
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     }
   });
 
@@ -297,8 +302,8 @@ connectDB().then((connected) => {
     process.exit(1);
   }
 
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
     console.log(`Allowed CORS origins: ${CLIENT_ORIGIN}`);
     if (!connected) {
       console.warn('Server started without DB connection. Login/register will return 503.');
