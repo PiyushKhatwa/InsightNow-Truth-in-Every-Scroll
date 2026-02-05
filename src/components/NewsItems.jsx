@@ -144,91 +144,86 @@ import NewsCards from "./NewsCards";
 import Category from "./Category";
 
 function NewsItems({ category, setCategory, country, isLoggedIn }) {
+  const [articles, setArticles] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const [articles, setArticles] = useState([]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+  // 👇 IMPORTANT
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-    // 👇 IMPORTANT
-    const API_BASE = import.meta.env.VITE_API_URL;
+  const resultNews = async () => {
+    setLoading(true);
+    setError(null);
 
-    const resultNews = async () => {
-        setLoading(true);
-        setError(null);
+    try {
+      const response = await fetch(
+        `${API_BASE}/api/news?country=${country}&category=${category}&page=${pageNumber}`,
+      );
 
-        try {
+      if (!response.ok) {
+        throw new Error("Failed to fetch news");
+      }
 
-            const response = await fetch(
-                `${API_BASE}/api/news?country=${country}&category=${category}&page=${pageNumber}`
-            );
+      const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch news");
-            }
+      if (!data.articles || data.articles.length === 0) {
+        setError("No articles found");
+        setArticles([]);
+        return;
+      }
 
-            const data = await response.json();
-
-            if (!data.articles || data.articles.length === 0) {
-                setError("No articles found");
-                setArticles([]);
-                return;
-            }
-
-            setArticles(data.articles);
-
-        } catch (err) {
-            console.error(err);
-            setError("Failed to fetch news");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        resultNews();
-    }, [category, country, pageNumber]);
-
-    if (!isLoggedIn) {
-        return (
-            <div className="container text-center mt-5">
-                <h2>Please Sign In to View News</h2>
-                <a href="/sign-in" className="btn btn-primary">
-                    Sign In
-                </a>
-            </div>
-        );
+      setArticles(data.articles);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch news");
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
+    resultNews();
+  }, [category, country, pageNumber]);
+
+  if (!isLoggedIn) {
     return (
-        <div className="container mt-4">
-
-            <Category setCategory={setCategory} />
-
-            {loading ? (
-                <h3>Loading...</h3>
-            ) : error ? (
-                <div className="alert alert-warning">{error}</div>
-            ) : (
-                <div className="row g-4">
-                    {articles.map((element) => (
-                        <div className="col-md-4" key={element.url}>
-                            <NewsCards
-                                imageUrl={element.urlToImage}
-                                title={element.title}
-                                newsUrl={element.url}
-                                sourceName={element.source.name}
-                                description={element.description}
-                                authorName={element.author}
-                                publishedAt={element.publishedAt}
-                            />
-                        </div>
-                    ))}
-                </div>
-            )}
-
-        </div>
+      <div className="container text-center mt-5">
+        <h2>Please Sign In to View News</h2>
+        <a href="/sign-in" className="btn btn-primary">
+          Sign In
+        </a>
+      </div>
     );
+  }
+
+  return (
+    <div className="container mt-4">
+      <Category setCategory={setCategory} />
+
+      {loading ? (
+        <h3>Loading...</h3>
+      ) : error ? (
+        <div className="alert alert-warning">{error}</div>
+      ) : (
+        <div className="row g-4">
+          {articles.map((element) => (
+            <div className="col-md-4" key={element.url}>
+              <NewsCards
+                imageUrl={element.urlToImage}
+                title={element.title}
+                newsUrl={element.url}
+                sourceName={element.source.name}
+                description={element.description}
+                authorName={element.author}
+                publishedAt={element.publishedAt}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default NewsItems;
