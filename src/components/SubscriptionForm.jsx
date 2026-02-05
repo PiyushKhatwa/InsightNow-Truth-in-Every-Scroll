@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import backgroundImage from '../assets/beams-basic.png';
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
+import apiClient from '../lib/apiClient';
 
 const SubscriptionForm = () => {
   const [name, setName] = useState('');
@@ -9,22 +10,16 @@ const SubscriptionForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://news-web-app-backend-re7n.onrender.com/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email }),
-      });
-      if (response.ok) {
-        toast.success("Subscribed To NewziFy!!")
+      const response = await apiClient.post('/subscribe', { name, email });
+      if (response.status >= 200 && response.status < 300) {
+        toast.success("Subscribed To InsightNow!!")
         // Subscription success
         console.log('Subscription success!');
         // Reset form after successful submission
         setName('');
         setEmail('');
       } else {
-        toast.error("Failed To Subscribed!")
+        toast.error("Failed To Subscribe!")
 
         // Subscription failed
         console.error('Subscription failed.');
@@ -47,7 +42,7 @@ const SubscriptionForm = () => {
     >
       <div className="container border mt-5 p-5 rounded" style={{ maxWidth: '50%', margin: 'auto' }}>
         <div>
-          <h1 className="text-center mb-4">Subscribe to Newzify</h1>
+          <h1 className="text-center mb-4">Subscribe to InsightNow</h1>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="name" className="form-label">

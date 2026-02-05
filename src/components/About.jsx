@@ -4,49 +4,75 @@ import {
     faTwitter,
     faGithub,
     faLinkedin,
-    faDiscord,
+    faDiscord
 } from "@fortawesome/free-brands-svg-icons";
-import google from '../assets/google.png'
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const About = () => {
     return (
-        <div className="container mt-5">
-            <div className="row">
-                <div className="col-md-8 mx-auto">
-                    <h2 className="text-center mb-4">About NewziFy</h2>
-                    <p>NewziFy is a cutting-edge news web application designed to deliver the latest and most relevant news from around the world. With its intuitive user interface and robust features, staying informed has never been easier.</p>
-                    <h4 className="mt-4">Key Features:</h4>
-                    <ul>
-                        <li>Personalized News Feed: Tailored to your interests, ensuring you never miss out on important stories.</li>
-                        <li>Search Functionality: Easily find articles on topics that matter to you.</li>
-                        <li>Push Notifications: Stay updated with breaking news alerts and personalized recommendations.</li>
-                        <li>Social Media Integration: Share articles effortlessly with your friends and followers.</li>
-                        <li>Bookmarking and Saving: Save articles for later reading and organize them for easy access.</li>
-                        <li>Commenting and Discussion: Engage with other users and share your opinions on news articles.</li>
-                    </ul>
-                    <h4 className="mt-4">UI Design:</h4>
-                    <p>NewziFy boasts a sleek and user-friendly interface, designed to provide a seamless browsing experience. With its clean layout and intuitive navigation, finding and consuming news articles is a breeze.</p>
-                    <h4 className="mt-4">About the Creator:</h4>
-                    <p>NewziFy was created by <span style={{color:'red',fontSize:'bold'}}>Mangesh Yadav</span>, a passionate developer dedicated to delivering innovative solutions for staying informed in today's fast-paced world. With a focus on user experience and cutting-edge technology, Mangesh strives to make NewziFy the go-to platform for news enthusiasts everywhere.</p>
-                    <div className=" mt-5 d-flex justify-content-around align-items-center mx-auto" style={{ maxWidth: '15rem' }}>
-                        <a href="https://github.com/yadavmangesh07" className="github">
-                            <FontAwesomeIcon icon={faGithub} size="2x" style={{ color: 'black',marginInline:'.5rem' }} />
-                        </a>
-                        <a href="https://www.linkedin.com/in/mangesh-yadav-65a437237" style={{marginInline:'.5rem' }} className="linkedin">
-                            <FontAwesomeIcon icon={faLinkedin} size="2x" />
-                        </a>
-                        <a href="https://twitter.com/__Mangesh" className="twitter social" style={{marginInline:'.5rem',color:'black' }}>
-                            <FontAwesomeIcon icon={faTwitter} size="2x" />
-                        </a>
-                        <a href="https://discord.com/users/OPTIMUS#3832" className="discord social" >
-                            <FontAwesomeIcon icon={faDiscord} size="2x" />
-                        </a>
-                        <div>
-                            <a href="mailto:mangeshyadav8736@gmail.com" className="mail social">
-                                <img src={google} className="" style={{ height: '44px', width: '44px' }} />
-                            </a>
+        <div className="container py-5">
+            <div className="row justify-content-center">
+                <div className="col-md-8">
+                    <div className="card shadow">
+                        <div className="card-body p-4">
+                            <h2 className="text-center mb-4">About InsightNow</h2>
+                            <p className="lead text-center mb-4">
+                                Your Gateway to the World's Latest News
+                            </p>
+                            
+                            <div className="mb-4">
+                                <p>
+                                    InsightNow is a cutting-edge news web application designed to deliver the latest and most relevant news from around the world. With its intuitive user interface and robust features, staying informed has never been easier.
+                                </p>
+                            </div>
+
+                            <div className="mb-4">
+                                <h4 className="mb-3">Key Features:</h4>
+                                <ul className="list-group list-group-flush">
+                                    <li className="list-group-item">Personalized News Feed: Tailored to your interests</li>
+                                    <li className="list-group-item">Search Functionality: Find articles on topics that matter to you</li>
+                                    <li className="list-group-item">Push Notifications: Stay updated with breaking news</li>
+                                    <li className="list-group-item">Social Media Integration: Share articles effortlessly</li>
+                                    <li className="list-group-item">Bookmarking: Save articles for later reading</li>
+                                    <li className="list-group-item">Discussion: Engage with other users</li>
+                                </ul>
+                            </div>
+
+                            <div className="mb-4">
+                                <h4 className="mb-3">UI Design:</h4>
+                                <p>
+                                    InsightNow boasts a sleek and user-friendly interface, designed to provide a seamless browsing experience. With its clean layout and intuitive navigation, finding and consuming news articles is a breeze.
+                                </p>
+                            </div>
+
+                            <div className="mb-4">
+                                <h4 className="mb-3">About the Creators:</h4>
+                                <p>
+                                    InsightNow was created by <span className="text-primary fw-bold">Piyush Khatwa and Anirudh Parihar</span>, passionate developers dedicated to delivering innovative solutions for staying informed in today's fast-paced world.
+                                </p>
+                            </div>
+
+                            <div className="text-center mt-5">
+                                <h5 className="mb-3">Connect With Us</h5>
+                                <div className="d-flex justify-content-center gap-3">
+                                    <a href="https://github.com/PiyushKhatwa" className="text-dark">
+                                        <FontAwesomeIcon icon={faGithub} size="2x" />
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/piyush-khatwa-9a75a9281/" className="text-primary">
+                                        <FontAwesomeIcon icon={faLinkedin} size="2x" />
+                                    </a>
+                                    <a href="https://x.com/khatwa_piyush" className="text-info">
+                                        <FontAwesomeIcon icon={faTwitter} size="2x" />
+                                    </a>
+                                    <a href="https://discord.com/channels/@me" className="text-primary">
+                                        <FontAwesomeIcon icon={faDiscord} size="2x" />
+                                    </a>
+                                    <a href="mailto:piyushkhatwa1819@gmail.com" className="text-danger">
+                                        <FontAwesomeIcon icon={faEnvelope} size="2x" />
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>

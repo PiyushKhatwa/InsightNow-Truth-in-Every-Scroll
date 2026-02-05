@@ -6,45 +6,88 @@ function NewsItems({ category, setCategory, country, isLoggedIn, setIsLoggedIn }
     const [articles, setArticles] = useState([]);
     const [pageNumber, setPageNumber] = useState(1);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [info, setInfo] = useState(null);
+
+    const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY || 'a63ab02946b640f1a45559f967c8e017';
+    const countryLabels = {
+        in: 'India',
+        us: 'USA',
+        cn: 'China',
+        ru: 'Russia',
+        jp: 'Japan',
+        fr: 'France',
+        ca: 'Canada',
+        br: 'Brazil',
+        hk: 'Hong Kong',
+        ae: 'UAE'
+    };
 
     const resultNews = async () => {
-        // Hardcoded URL for testing
-        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=a63ab02946b640f1a45559f967c8e017&page=${pageNumber}`;
-        console.log("Fetching URL:", url); // Debug the URL
+        setLoading(true);
+        setError(null);
+        setInfo(null);
+        
+        const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${NEWS_API_KEY}&pageSize=20&page=${pageNumber}`;
+        console.log("Fetching URL:", url);
 
         try {
             const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const parsedData = await response.json();
-            console.log("Parsed Data:", parsedData);
+            console.log("API Response:", parsedData);
 
             if (parsedData.status !== "ok") {
-                console.error("API Error:", parsedData.message);
-                setError(parsedData.message || "Failed to fetch news");
-                setArticles([]);
-                return;
+                throw new Error(parsedData.message || "Failed to fetch news");
             }
 
-            console.log("Total Results:", parsedData.totalResults);
-            if (parsedData.totalResults === 0 || !parsedData.articles.length) {
-                console.log("No articles found for the current query.");
-                setError("No articles found for the selected category and country.");
-                setArticles([]);
+            if (!parsedData.articles || parsedData.articles.length === 0) {
+                const countryLabel = countryLabels[country] || country.toUpperCase();
+                const fallbackUrl = `https://newsapi.org/v2/everything?q=${encodeURIComponent(countryLabel)}&apiKey=${NEWS_API_KEY}&pageSize=20&page=${pageNumber}&sortBy=publishedAt&language=en`;
+                console.log("Fallback URL:", fallbackUrl);
+
+                const fallbackResponse = await fetch(fallbackUrl);
+                if (!fallbackResponse.ok) {
+                    throw new Error(`HTTP error! status: ${fallbackResponse.status}`);
+                }
+                const fallbackData = await fallbackResponse.json();
+                console.log("Fallback API Response:", fallbackData);
+
+                if (fallbackData.status !== "ok") {
+                    throw new Error(fallbackData.message || "Failed to fetch news");
+                }
+
+                if (!fallbackData.articles || fallbackData.articles.length === 0) {
+                    setError("No articles found. Try selecting a different category or country.");
+                    setArticles([]);
+                    return;
+                }
+
+                setInfo(`No top headlines for ${countryLabel}. Showing related articles instead.`);
+                setArticles(fallbackData.articles);
                 return;
             }
 
             setArticles(parsedData.articles);
-            setError(null);
         } catch (error) {
             console.error("Error fetching news:", error);
-            setError("An error occurred while fetching news. Please try again.");
+            setError("Failed to fetch news. Please try again later.");
             setArticles([]);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         resultNews();
-        console.log("category changed :",category)
-    }, [category, pageNumber, country,setCategory,]);
+    }, [category, country, pageNumber]);
+
+    useEffect(() => {
+        setPageNumber(1);
+    }, [category, country]);
 
     const pagePreviousHandler = () => {
         if (pageNumber > 1) {
@@ -52,57 +95,85 @@ function NewsItems({ category, setCategory, country, isLoggedIn, setIsLoggedIn }
         }
     };
 
-    const pageNextHandler = async () => {
-        const nextPageNumber = pageNumber + 1;
-        const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=a63ab02946b640f1a45559f967c8e017&page=${nextPageNumber}`;
-        console.log("Fetching Next Page URL:", url);
-
-        try {
-            const response = await fetch(url);
-            const parsedData = await response.json();
-            console.log("Next Page Parsed Data:", parsedData);
-
-            setArticles(parsedData.articles);
-            setPageNumber(nextPageNumber);
-        } catch (error) {
-            console.error("Error fetching next page:", error);
-        }
+    const pageNextHandler = () => {
+        setPageNumber(pageNumber + 1);
     };
 
-    return (
-        <>
-            <Category setCategory={setCategory} setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn} />
-            <h3 className="text-center" style={{ wordSpacing: '.5rem', marginTop: '5rem' }}>
-                NewziFy - Top Headlines Of The Day
-            </h3>
-            <div style={{ margin: '3rem', padding: '.5rem' }}>
-                {error ? (
-                    <div className="text-center text-danger">{error}</div>
-                ) : (
-                    <>
-                        <div className="row">
-                            {articles.map((element) => (
-                                <div className="col-md-3 mb-3" key={element.url}>
-                                    <NewsCards
-                                        imageUrl={element.urlToImage || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrIuFW7NeWsGsABRfHpMPTYnrIgZcPVCuPOA&usqp=CAU'}
-                                        title={element.title}
-                                        newsUrl={element.url}
-                                        sourceName={element.source.name}
-                                        description={element.description}
-                                        authorName={element.author || 'Anonymous'}
-                                        publishedAt={element.publishedAt}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                        <div className="container d-flex justify-content-between">
-                            <button disabled={pageNumber === 1} className="btn btn-outline-dark" onClick={pagePreviousHandler}>&larr; Previous</button>
-                            <button className="btn btn-outline-dark" onClick={pageNextHandler}>Next &rarr;</button>
-                        </div>
-                    </>
-                )}
+    if (!isLoggedIn) {
+        return (
+            <div className="container text-center mt-5">
+                <h2>Please Sign In to View News</h2>
+                <p>You need to be logged in to access the news articles.</p>
+                <a href="/sign-in" className="btn btn-primary">Sign In</a>
             </div>
-        </>
+        );
+    }
+
+    return (
+        <div className="container mt-4">
+            <Category setCategory={setCategory} isLoggedIn={isLoggedIn} />
+            
+            {loading ? (
+                <div className="text-center my-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            ) : error ? (
+                <div className="text-center my-5">
+                    <div className="alert alert-warning" role="alert">
+                        {error}
+                    </div>
+                    <button 
+                        className="btn btn-primary mt-3"
+                        onClick={() => {
+                            setCategory('general');
+                            setPageNumber(1);
+                        }}
+                    >
+                        Try General News
+                    </button>
+                </div>
+            ) : (
+                <>
+                    {info && (
+                        <div className="alert alert-info" role="alert">
+                            {info}
+                        </div>
+                    )}
+                    <div className="row g-4">
+                        {articles.map((element) => (
+                            <div className="col-md-4" key={element.url}>
+                                <NewsCards
+                                    imageUrl={element.urlToImage || 'https://via.placeholder.com/300x200?text=No+Image'}
+                                    title={element.title}
+                                    newsUrl={element.url}
+                                    sourceName={element.source.name}
+                                    description={element.description}
+                                    authorName={element.author || 'Anonymous'}
+                                    publishedAt={element.publishedAt}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="d-flex justify-content-between my-4">
+                        <button 
+                            disabled={pageNumber === 1} 
+                            className="btn btn-primary" 
+                            onClick={pagePreviousHandler}
+                        >
+                            &larr; Previous
+                        </button>
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={pageNextHandler}
+                        >
+                            Next &rarr;
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
     );
 }
 

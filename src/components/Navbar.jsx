@@ -10,6 +10,15 @@ function Navbar(props) {
     selectedCountry(countryName);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    props.setIsLoggedIn(false);
+    if (props.setUserDetails) {
+      props.setUserDetails(null);
+    }
+    toast.success("Logged Out Successfully !!");
+  };
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary border sticky-top "
       style={{
@@ -21,7 +30,7 @@ function Navbar(props) {
        paddingLeft:'1rem'
       }}>
       <div className="container-fluid">
-        <Link className="navbar-brand mx-4" href="#"><h5>NewziFy</h5></Link>
+        <Link className="navbar-brand mx-4" href="#"><h5>InsightNow – Truth in Every Scroll</h5></Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -54,16 +63,16 @@ function Navbar(props) {
                   </button>
                 )}
                 <ul className="dropdown-menu ">
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('in', 'India')}>India</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('us', 'USA')}>USA</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('ch', 'China')}>China</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('ru', 'Russia')}>Russia</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('jp', 'Japan')}>Japan</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('fr', 'France')}>France</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('ca', 'Canada')}>Canada</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('br', 'Brazil')}>Brazil</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('hk', 'Hong Kong')}>Hong Kong</Link></li>
-                  <li><Link className="dropdown-item" onClick={() => toggleCountry('ae', 'UAE')}>UAE</Link></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('in', 'India')}>India</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('us', 'USA')}>USA</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('cn', 'China')}>China</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('ru', 'Russia')}>Russia</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('jp', 'Japan')}>Japan</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('fr', 'France')}>France</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('ca', 'Canada')}>Canada</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('br', 'Brazil')}>Brazil</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('hk', 'Hong Kong')}>Hong Kong</button></li>
+                  <li><button type="button" className="dropdown-item" onClick={() => toggleCountry('ae', 'UAE')}>UAE</button></li>
                 </ul>
               </div>
             </li>
@@ -80,7 +89,15 @@ function Navbar(props) {
               </Link>
             </div>
           ) : (
-            <div className="btn-group dropstart">
+            <div className="d-flex align-items-center gap-2">
+              <button
+                type="button"
+                className="btn btn-outline-dark"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+              <div className="btn-group dropstart">
               <button type="button" className="btn p-0   dropdown-toggle-split d-flex" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src={navProfileIcon} alt="Accept" className="img-fluid mx-auto d-block" style={{ maxWidth: '2.5rem', maxHeight: '2.5rem' }} />
                 <span className='p-2'>{props.userDetails.name}</span>
@@ -92,11 +109,11 @@ function Navbar(props) {
                 <li><hr className="dropdown-divider" /></li>
                 <li>
                   <Link className="dropdown-item" to="/" onClick={() => {
-                    toast.success("Logged Out Successfully !!")
-                    props.setIsLoggedIn(false);
+                    handleLogout();
                   }}>Log Out</Link>
                 </li>
               </ul>
+              </div>
             </div>
           )}
         </div>

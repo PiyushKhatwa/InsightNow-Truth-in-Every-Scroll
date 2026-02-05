@@ -6,7 +6,7 @@ import Forms from './components/Forms'
 import google from '../src/assets/google.png'
 import facebook from '../src/assets/facebook.png'
 import backgroundImage from '../src/assets/beams-basic.png'
-import SubscriptionForm from './components/SubscriptionForm'
+import Subscribe from './components/Subscribe'
 import RegistrationSuccess from './components/RegistrationSucces'
 import ProfileDetail from './components/ProfileDetail'
 import About from './components/About'
@@ -38,7 +38,7 @@ function App() {
     <Route path="/sign-in" element={<Forms formtitle='Sign-In Using Your Account' button='Sign in' Password='Password' google={google}  facebook={facebook} setIsLoggedIn={setIsLoggedIn} setUserDetails={setUserDetails}/>}/>
     <Route path="/sign-up" element={<Forms formtitle='Create A New Account' button='Sign up' Password='Create Password' google={google}  facebook={facebook}/>} />
     <Route path="/" element={<NewsItems category={category} setCategory={setCategory} country={country} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-    <Route path='/subscribe' element={<SubscriptionForm/>}></Route>
+    <Route path='/subscribe' element={<Subscribe/>}></Route>
     <Route path='/registration-success' element={<RegistrationSuccess title={'Registration Succesfull !!'} msg={'Thank You For Registering To NewziFy'}/>}/>
     <Route path='/authenticated-area' element={<RegistrationSuccess title={'Logged In Succesfully !!'} msg={'Welcome To NewziFy'} setIsLoggedIn={setIsLoggedIn}/>}/>
     <Route path='/profileDetail' element={<ProfileDetail userDetails={userDetails}/>}/>
