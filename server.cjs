@@ -207,34 +207,53 @@ app.post('/api/login', async (req, res) => {
 
 
 
-const axios = require("axios");
 
 app.get("/api/news", async (req, res) => {
+  try {
+    const { category = "general", country = "in", page = 1 } = req.query;
 
-    try {
+    let response = await axios.get(
+      "https://newsapi.org/v2/top-headlines",
+      {
+        params: {
+          country,
+          category,
+          apiKey: process.env.NEWS_API_KEY,
+          pageSize: 20,
+          page
+        }
+      }
+    );
 
-        const { category = "general", country = "in", page = 1 } = req.query;
+    // ⭐ Fallback if no articles
+    if (!response.data.articles || response.data.articles.length === 0) {
+      console.log("Fallback to everything API");
 
-        const response = await axios.get(
-            "https://newsapi.org/v2/top-headlines",
-            {
-                params: {
-                    country,
-                    category,
-                    apiKey: process.env.NEWS_API_KEY,
-                    pageSize: 20,
-                    page
-                }
-            }
-        );
-
-        res.json(response.data);
-
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: "Failed to fetch news" });
+      response = await axios.get(
+        "https://newsapi.org/v2/everything",
+        {
+          params: {
+            q: country === "in" ? "India" : country,
+            apiKey: process.env.NEWS_API_KEY,
+            pageSize: 20,
+            page,
+            sortBy: "publishedAt",
+            language: "en"
+          }
+        }
+      );
     }
 
+    res.json(response.data);
+
+  } catch (error) {
+    console.error("News fetch error:", error.response?.data || error.message);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch news"
+    });
+  }
 });
 
 
