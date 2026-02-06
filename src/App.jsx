@@ -40,7 +40,7 @@ function App() {
     <Route path="/" element={<NewsItems category={category} setCategory={setCategory} country={country} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
     <Route path='/subscribe' element={<Subscribe/>}></Route>
     <Route path='/registration-success' element={<RegistrationSuccess title={'Registration Succesfull !!'} msg={'Thank You For Registering To NewziFy'}/>}/>
-    <Route path='/authenticated-area' element={<RegistrationSuccess title={'Logged In Succesfully !!'} msg={'Welcome To NewziFy'} setIsLoggedIn={setIsLoggedIn}/>}/>
+    <Route path='/authenticated-area' element={<RegistrationSuccess title={'Logged In Succesfully !!'} msg={'Welcome To Insight Now'} setIsLoggedIn={setIsLoggedIn}/>}/>
     <Route path='/profileDetail' element={<ProfileDetail userDetails={userDetails}/>}/>
     <Route path='/about' element={<About/>}/>
     </Routes>
